@@ -6,7 +6,9 @@ import { GET_USERS } from '../queries/queries'
 import { GetUsersQuery } from '../types/generated/graphql'
 
 const FetchMain: VFC = () => {
-  const { data, error } = useQuery<GetUsersQuery>(GET_USERS)
+  const { data, error, loading } = useQuery<GetUsersQuery>(GET_USERS, {
+    fetchPolicy: 'network-only',
+  })
 
   if (error)
     return (
@@ -18,11 +20,13 @@ const FetchMain: VFC = () => {
   return (
     <Layout title="Hasura fetchPolicy">
       <p className="mb-6 font-bold">Hasura main page</p>
-      {data?.users.map((user) => (
-        <p className="my-1" key={user.id}>
-          {user.name}
-        </p>
-      ))}
+      {loading
+        ? 'Loading...'
+        : data?.users.map((user) => (
+            <p className="my-1" key={user.id}>
+              {user.name}
+            </p>
+          ))}
       <Link href="hasura-sub">
         <a className="mb-6">Next</a>
       </Link>
